@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_compass/flutter_compass.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,56 +15,68 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _HomePageState extends State<HomePage> {
+  double? heading = 0.0;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
+  @override
+  void initState() {
+    super.initState();
+    FlutterCompass.events!.listen((event) {
+      setState(() {
+        heading = event.heading;
+      });
+
     });
+
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      backgroundColor: const Color.fromRGBO(123, 31, 162, 1),
       appBar: AppBar(
-
-        title: Text(widget.title),
+        backgroundColor: const Color.fromRGBO(250, 167, 33, 1),
+        title: const Text('MMOS - 2. seminarski rad', style: TextStyle(color: Colors.black)),
       ),
-      body: Center(
-
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "${heading?.ceil()}",
+            style: const TextStyle(
+                color: Colors.white,
+                fontSize: 26.0,
+                fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 50.0
+          ),
+          Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Stack(
+              children: [
+                Image.asset('assets/cadrant.png'),
+                Transform.rotate(
+                  angle: ((heading ?? 0) *  (3.1412 / 180) * -1),
+                  child: Image.asset('assets/compass.png')
+                )
+              ]
+            )
+          )
+        ],
       ),
     );
   }
