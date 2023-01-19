@@ -36,9 +36,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     FlutterCompass.events!.listen((event) {
-      setState(() {
-        heading = event.heading;
-      });
+      if (event.heading != null) {
+        setState(() {
+          heading = event.heading! < 0 ? 360 + event.heading! : event.heading;
+        });
+      }
     });
   }
 
